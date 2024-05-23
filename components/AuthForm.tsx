@@ -18,17 +18,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
-
-const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(8, {
-    message: "Password must be 8 character long.",
-  }),
-});
+import { authFormSchema } from "@/constants";
+import FormInput from "./FormInput";
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const formSchema = authFormSchema(type);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -72,40 +69,70 @@ const AuthForm = ({ type }: { type: string }) => {
         <>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
+              {type === "sign-up" && (
+                <>
+                  <div className="flex gap-4">
+                    <FormInput
+                      control={form.control}
+                      name="firstName"
+                      label="First Name"
+                      placeholder="Enter your first name..."
+                    />
+                    <FormInput
+                      control={form.control}
+                      name="lastName"
+                      label="Last Name"
+                      placeholder="Enter your last name..."
+                    />
+                  </div>
+                  <FormInput
+                    control={form.control}
+                    name="address"
+                    label="Address"
+                    placeholder="Enter your specific address..."
+                  />
+                  <div className="flex gap-4">
+                    <FormInput
+                      control={form.control}
+                      name="state"
+                      label="State"
+                      placeholder="Enter your state..."
+                    />
+                    <FormInput
+                      control={form.control}
+                      name="postalCode"
+                      label="Postal Code"
+                      placeholder="ex:123456"
+                    />
+                  </div>
+                  <div className="flex gap-4">
+                    <FormInput
+                      control={form.control}
+                      name="dateOfBirth"
+                      label="Date of Birth"
+                      placeholder="YYYY-MM-DD"
+                    />
+                    <FormInput
+                      control={form.control}
+                      name="ssn"
+                      label="SSN"
+                      placeholder="ex:1234"
+                    />
+                  </div>
+                </>
+              )}
+              <FormInput
                 control={form.control}
                 name="email"
-                render={({ field }) => (
-                  <FormItem className="form-item">
-                    <FormLabel className="form-label">Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="input-class"
-                        placeholder="Enter your email..."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="form-message" />
-                  </FormItem>
-                )}
+                label="Email"
+                placeholder="Email"
               />
-              <FormField
+              <FormInput
                 control={form.control}
+                type="password"
                 name="password"
-                render={({ field }) => (
-                  <FormItem className="form-item">
-                    <FormLabel className="form-label">Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="input-class"
-                        placeholder="Enter your password..."
-                        type="password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="form-message" />
-                  </FormItem>
-                )}
+                label="Password"
+                placeholder="Password"
               />
               <div className="flex flex-col gap-4">
                 <Button type="submit" className="form-btn">
